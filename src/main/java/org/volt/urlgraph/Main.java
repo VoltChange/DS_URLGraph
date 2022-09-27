@@ -52,8 +52,10 @@ public class Main extends Application {
     public void start(Stage ignored) {
 
         //Graph<String, String> g = build_sample_digraph();
-        Graph<String, String> g = build_url_digraph("www.fudan.edu.cn");
-        System.out.println(g);
+        System.out.println("please input seed site");
+        String seed = "www.fudan.edu.cn";
+        Graph<String, String> g = build_url_digraph(seed);
+        //System.out.println(g);
         
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
         //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
@@ -63,16 +65,16 @@ public class Main extends Application {
         After creating, you can change the styling of some element.
         This can be done at any time afterwards.
         */
-       // if (g.numVertices() > 0) {
-       //     graphView.getStylableVertex("A").setStyle("-fx-fill: gold; -fx-stroke: brown;");
-       // }
+       if (g.numVertices() > 0) {
+            graphView.getStylableVertex(seed).setStyle("-fx-fill: gold; -fx-stroke: brown;");
+        }
 
         /*
         Basic usage:            
         Use SmartGraphDemoContainer if you want zoom capabilities and automatic layout toggling
         */
         //Scene scene = new Scene(graphView, 1024, 768);
-        Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 1024, 768);
+        Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 900, 640);
 
         Stage stage = new Stage(StageStyle.DECORATED);
         stage.setTitle("JavaFX SmartGraph Visualization");
@@ -146,39 +148,17 @@ public class Main extends Application {
     {
         Digraph<String, String> g = new DigraphEdgeList<>();
         GraphManipulator gm=new GraphManipulator();
+        long startTime = System.currentTimeMillis();
         gm.generateGraph(seed);
+        long endTime = System.currentTimeMillis();
+        long usedTime = endTime - startTime;
+        System.out.println("used time : "+usedTime+"ms");
         for (GraphNode n: gm.getNodes()) {
             g.insertVertex(n.getNodeName());
         }
         for (GraphEdge e: gm.getEdges()) {
             g.insertEdge(e.getOrigin().getNodeName(),e.getTerminal().getNodeName(),e.getOrigin().getNodeName()+"-"+e.getTerminal().getNodeName());
         }
-        return g;
-    }
-    private Graph<String, String> build_sample_digraph() {
-
-        Digraph<String, String> g = new DigraphEdgeList<>();
-
-        g.insertVertex("A");
-        g.insertVertex("B");
-        g.insertVertex("C");
-        g.insertVertex("D");
-        g.insertVertex("E");
-        g.insertVertex("F");
-        g.insertVertex("X");
-        g.insertEdge("A", "B", "AB");
-        g.insertEdge("B", "A", "AB2");
-        g.insertEdge("A", "C", "AC");
-        g.insertEdge("A", "D", "AD");
-        g.insertEdge("B", "C", "BC");
-        g.insertEdge("C", "D", "CD");
-        g.insertEdge("B", "E", "BE");
-        g.insertEdge("F", "D", "DF");
-        g.insertEdge("F", "D", "DF2");
-
-        //yep, its a loop!
-        g.insertEdge("A", "A", "Loop");
-
         return g;
     }
 }

@@ -47,7 +47,7 @@ public class GraphManipulator {
             {
                 //已经搜索过的节点中不含有该节点并且level小于4
                 LinkedList<String> relatedDomains =UrlFetcher.getRelatedDomain(presentNode.nodeName,6);
-                System.out.print(relatedDomains);
+                //System.out.print(relatedDomains);
                 for (String rdomain:relatedDomains) {
                     graph.insertNode(rdomain);//加点
                     graph.insertEdge(presentNode.nodeName,rdomain);//加边
@@ -55,7 +55,7 @@ public class GraphManipulator {
                 }
                 searchedNodes.add(presentNode.nodeName);//加入已经搜索过的节点队列
             }
-            System.out.println("@"+presentNode.nodeName);
+            //System.out.println("@"+presentNode.nodeName);
         }
     }
     public static void main(String[] args){
