@@ -16,4 +16,8 @@ public class GraphNode {
     {
         return nodeName;
     }
+    public int getInDegree()
+    {
+        return inDegree;
+    }
 }

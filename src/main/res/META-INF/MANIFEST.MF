@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Main-Class: org.volt.urlgraph.Main
+Class-Path: javafx-controls-13-win.jar JavaFXSmartGraph-0.9.4.jar javafx
+ -graphics-13-win.jar javafx-fxml-13-win.jar javafx-controls-13.jar java
+ fx-fxml-13.jar javafx-graphics-13.jar javafx-base-13-win.jar javafx-bas
+ e-13.jar org.jsoup-1.10.2.LIFERAY-PATCHED-2.jar jsoup-1.10.2.jar
+

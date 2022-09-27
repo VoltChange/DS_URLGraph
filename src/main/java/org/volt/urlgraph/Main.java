@@ -1,26 +1,4 @@
-package org.volt.urlgraph;/*
- * The MIT License
- *
- * Copyright 2019 brunomnsilva@gmail.com.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+package org.volt.urlgraph;
 
 import com.brunomnsilva.smartgraph.containers.SmartGraphDemoContainer;
 import com.brunomnsilva.smartgraph.graph.Digraph;
@@ -38,7 +16,9 @@ import org.volt.urlgraph.utils.graph.GraphEdge;
 import org.volt.urlgraph.utils.graph.GraphManipulator;
 import org.volt.urlgraph.utils.graph.GraphNode;
 
-import static java.lang.Thread.sleep;
+import java.util.LinkedList;
+import java.util.Scanner;
+
 
 /**
  *
@@ -51,29 +31,20 @@ public class Main extends Application {
     @Override
     public void start(Stage ignored) {
 
-        //Graph<String, String> g = build_sample_digraph();
         System.out.println("please input seed site");
-        String seed = "www.fudan.edu.cn";
+        String seed;
+        Scanner scanner =new Scanner(System.in);
+        seed =scanner.nextLine();
         Graph<String, String> g = build_url_digraph(seed);
         //System.out.println(g);
         
         SmartPlacementStrategy strategy = new SmartCircularSortedPlacementStrategy();
-        //SmartPlacementStrategy strategy = new SmartRandomPlacementStrategy();
         SmartGraphPanel<String, String> graphView = new SmartGraphPanel<>(g, strategy);
 
-        /*
-        After creating, you can change the styling of some element.
-        This can be done at any time afterwards.
-        */
        if (g.numVertices() > 0) {
             graphView.getStylableVertex(seed).setStyle("-fx-fill: gold; -fx-stroke: brown;");
         }
 
-        /*
-        Basic usage:            
-        Use SmartGraphDemoContainer if you want zoom capabilities and automatic layout toggling
-        */
-        //Scene scene = new Scene(graphView, 1024, 768);
         Scene scene = new Scene(new SmartGraphDemoContainer(graphView), 900, 640);
 
         Stage stage = new Stage(StageStyle.DECORATED);
@@ -83,30 +54,18 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
 
-        /*
-        IMPORTANT: Must call init() after scene is displayed so we can have width and height values
-        to initially place the vertices according to the placement strategy
-        */
         graphView.init();
 
-        /*
-        Bellow you can see how to attach actions for when vertices and edges are double clicked
-         */        
+
         graphView.setVertexDoubleClickAction((SmartGraphVertex<String> graphVertex) -> {
             System.out.println("Vertex contains element: " + graphVertex.getUnderlyingVertex().element());
                       
             //toggle different styling
             if( !graphVertex.removeStyleClass("myVertex") ) {
-                /* for the golden vertex, this is necessary to clear the inline
-                css class. Otherwise, it has priority. Test and uncomment. */
-                //graphVertex.setStyle(null);
                 
                 graphVertex.addStyleClass("myVertex");
             }
-            
-            //want fun? uncomment below with automatic layout
-            //g.removeVertex(graphVertex.getUnderlyingVertex());
-            //graphView.update();
+
         });
 
         graphView.setEdgeDoubleClickAction(graphEdge -> {
@@ -115,26 +74,10 @@ public class Main extends Application {
             graphEdge.setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
             
             graphEdge.getStylableArrow().setStyle("-fx-stroke: black; -fx-stroke-width: 3;");
-            
-            //uncomment to see edges being removed after click
-            //Edge<String, String> underlyingEdge = graphEdge.getUnderlyingEdge();
-            //g.removeEdge(underlyingEdge);
-            //graphView.update();
+
         });
 
-        /*
-        Should proceed with automatic layout or keep original placement?
-        If using SmartGraphDemoContainer you can toggle this in the UI 
-         */
-        //graphView.setAutomaticLayout(true);
-
-        /* 
-        Uncomment lines to org.example.test adding of new elements
-         */
-        //continuously_test_adding_elements(g, graphView);
-        //stage.setOnCloseRequest(event -> {
-        //    running = false;
-        //});
+        graphView.setAutomaticLayout(true);
     }
 
     /**
@@ -153,12 +96,22 @@ public class Main extends Application {
         long endTime = System.currentTimeMillis();
         long usedTime = endTime - startTime;
         System.out.println("used time : "+usedTime+"ms");
+        int biggestInDegree=-1;
+        String nodeWithBiggestInDegree="";
         for (GraphNode n: gm.getNodes()) {
             g.insertVertex(n.getNodeName());
+            if(n.getInDegree()>biggestInDegree)
+            {
+                biggestInDegree=n.getInDegree();
+                nodeWithBiggestInDegree=n.getNodeName();
+            }
         }
         for (GraphEdge e: gm.getEdges()) {
             g.insertEdge(e.getOrigin().getNodeName(),e.getTerminal().getNodeName(),e.getOrigin().getNodeName()+"-"+e.getTerminal().getNodeName());
         }
+        System.out.println("nodes number: "+gm.getNodes().size());
+        System.out.println("edges number: "+gm.getEdges().size());
+        System.out.println("node with biggest in-degree("+biggestInDegree+"): "+nodeWithBiggestInDegree);
         return g;
     }
 }
